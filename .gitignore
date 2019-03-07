@@ -1,0 +1,9 @@
+# vim files
+*.swo
+*.swp
+*~
+*.pyc
+__pycache__
+
+/.idea/
+*.pem
