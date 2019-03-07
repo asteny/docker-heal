@@ -47,6 +47,13 @@ arguments = parser.parse_args()
 log = logging.getLogger()
 
 
+def label_filter():
+    if arguments.label == 'all':
+        return None
+    else:
+        return {'label': arguments.label}
+
+
 def validate_check_after_start_time(start_time_seconds, start_at):
     start_at_time = datetime.strptime(start_at[0:-2], '%Y-%m-%dT%H:%M:%S.%f')
     delta = datetime.utcnow() - start_at_time
@@ -85,7 +92,7 @@ def container_restart(container):
 
 
 def main(client):
-    for container in client.containers(filters={'label': arguments.label}):
+    for container in client.containers(filters=label_filter()):
         container_inspect_info = client.inspect_container(container['Id'])
         health, start_at = get_container_info(container_inspect_info)
         if need_heal(health, start_at):
