@@ -66,7 +66,7 @@ def container_need_heal(container_inspect, container_name):
     ).get(
         'Health', {}
     ).get(
-        'Status', None
+        'Status'
     )
 
     start_at = container_inspect.get(
@@ -76,11 +76,9 @@ def container_need_heal(container_inspect, container_name):
     )
     if health is None:
         log.error(
-            '{} {} "{}", {}'.format(
+            '{} has label - "{}", but has no health check'.format(
                 container_name,
-                'has label -',
-                arguments.label,
-                'but has no health check'
+                arguments.label
             )
         )
         return False
