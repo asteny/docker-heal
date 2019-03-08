@@ -60,13 +60,13 @@ def validate_check_after_start_time(start_time_seconds, start_at):
     return delta.seconds > start_time_seconds
 
 
-def get_container_info(container_inspect):
+def container_need_heal(container_inspect, container_name):
     health = container_inspect.get(
         'State', {}
     ).get(
         'Health', {}
     ).get(
-        'Status', {}
+        'Status', None
     )
 
     start_at = container_inspect.get(
@@ -74,14 +74,21 @@ def get_container_info(container_inspect):
     ).get(
         'StartedAt', {}
     )
-    return health, start_at
-
-
-def need_heal(health, start_at):
-    return all(
-        (health == 'unhealthy',
-         validate_check_after_start_time(arguments.start_time, start_at))
-    )
+    if health is None:
+        log.error(
+            '{} {} "{}", {}'.format(
+                container_name,
+                'has label -',
+                arguments.label,
+                'but has no health check'
+            )
+        )
+        return False
+    else:
+        return all(
+            (health == 'unhealthy',
+             validate_check_after_start_time(arguments.start_time, start_at))
+        )
 
 
 def container_restart(container):
@@ -94,13 +101,9 @@ def container_restart(container):
 def main(client):
     for container in client.containers(filters=label_filter()):
         container_inspect_info = client.inspect_container(container['Id'])
-        health, start_at = get_container_info(container_inspect_info)
-        if need_heal(health, start_at):
-            log.warning('Healing ' + (' '.join(container['Names'])))
+        if container_need_heal(container_inspect_info, container['Names']):
+            log.warning('{} {}'.format('Healing', container['Names']))
             container_restart(container)
-        else:
-            log.exception((' '.join(
-                container['Names']) + ' has label, but has no health check'))
 
 
 if __name__ == "__main__":
