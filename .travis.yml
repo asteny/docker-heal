@@ -1,24 +1,27 @@
 dist: xenial
 language: python
-python: 3.6
+python: 3.5
 
 before_install:
-  - sudo apt-get install -y ruby ruby-dev rubygems build-essential libffi-dev devscripts libsystemd-dev
-  - sudo gem install -n /usr/local/bin --no-ri --no-rdoc fpm
+- sudo apt-get install -y ruby ruby-dev rubygems build-essential libffi-dev devscripts
+  libsystemd-dev
+- sudo gem install -n /usr/local/bin --no-ri --no-rdoc fpm
 addons:
   apt:
     update: true
 
 install:
-  - pip install virtualenv sh plumbum
+- pip install virtualenv sh plumbum
 
 script:
-  - python package/make-deb.py
+-
+- sudo `which python3` package/make-deb.py
 
 deploy:
   provider: bintray
-  file: build/packages/descriptor.json
-  user: asten
+  file: "./package/descriptor.json"
+  user:
+    secure: dgFRNX7PqhV3GI4fzgnBuxjd4TIwuJLMYLIrvkOVxxHgW67yvoSP2NLkGhYbNA5klLw6UR1vi9A3RwbLmfeAG3BlWMNY6qVMpxhVagwZaUmIC28LfFsxFrGzrAiOpc1OLDFT4iweS0+HglOvNCnFncpAbP3gvMCvdFd8AbS/y1lWe+vRXXY4JWnE7X8kMgn91RDX9gQ3+ycF8UEJ0DVLDObrhbT+2mNirb5ikCNReOeDYUbYpSsnNlJmR3G8bi/wuDWhV3b1g54jGp7z9Igw/WeAiONmSprXP44D/Gswh2kryALu4F5mbsd38gsoa0U5CPaHbjCMvQnLfORN853qElJ+RQb2T/err3UQTRYgGjE1qzs1A6SHuAZSg+Npy3C6aZ+N0CfaJW7R41MG1ycfRG5Xvo/8yq6//6YBTjsSChu15FsN+ADPEGXutzP2FNXm8Lm8QWmLd7BF1c/XY7m1Ey8fU3ThrYdNCH396Xs7yPdJ+956NZztlGsuO3NkOcWz+kQsJXYTMyTwnA0QMGddMvgdUQhzjJQyuc+okDq3BTg/h08M2khL0CafbaELUFH0Z0m+DVF9LOWMFcK5JeWrc7cWd2Do3p22yfTXcVVEWI6eHfDo3UDnFXwKgDLP2T2auFGARoz8wQy3IOO7913uAjsRjG4q8LsZ4DKxcg2qUe8=
   key:
-    secure: Av/Ivgcw2jVpEl0DCLpJT/dZosmbeCYd4i1t6UpM9h7p9sv/IniF5NZU5WF/VoVfcgCEPZULAf+HfuSycWjZu596L1Zn5J/nsVSy0gFy2DoxuMwEMI4aQT6gkcOE6F8lRIv6uZHiVNoH+pZ519pOA7ibRpAUYHnwckXGS+5ZCAu7O1f6QfuvgQoXhnf/zvz4nVjEasNeQcIdS8aVLAQgd18zp77sBBdfNsxVtEFEk4pZEg9fxCQrtSx2IvTzbUFVO4ygjbQdbP8qOKLHaUwa8dojHtGtT8VQoJDHXJqc1CHQlUOuoGWFwYc88wBscJibIcXV+dus3K9TKMr+9VhFyBnp1lDDhJ14iJWbfg7/PHIDQYXgRJQ3NM4t3mQT4IFDpZKCPHIjZM2IWacxFPsqi2oFBJE6JnRoT9mcNqd0A+vXwDSYLoxO2hid9/s8SkH2Da5+TchFaWGcbvNDjEFCsvORQ+EzYCVK2SDy2u/zfiNHdY0pBURlI+SyLJDG8NmCAEYyiIyimigkeWorp+XsRpJ8HTBgOuYthyhxyYniJQa4LYbCOtqPr8a+H9ZvfWqU1L7U942sq75z2iHncCiMoaJEINWXdQZnUjdRyhuO+gobaHd/hm8PQp4VFszfTelIZV5JC9IycuZopf3saiGivZrLsi8Lik/7iodNZFU0Ebo=
+    secure: Q0Z/iiX14j7+6K55B5oYtROeRmHEhCI497noCE8D2iZX8nORXKdr+yWvS3q3ni0LmyswTYlh4WWvkxI/j7DGe2o71A+4vSOpxVllqQUU8Y+Nx/pBsCB93LPg/uv45YrRCfSPLbmznHn+dA60WnP8QFzamY1eOeYIZMc7n/HYi4CVyeBf5DZ16aSYbezr9d4GECYvpNB6KViRCFQf2OVJTKhqpupGvm6g0+UhXLkImwt3Ri9Gx69VXSGnrHgHWhS70KVWI3vFNtq13Chhyw2XQSuZvgabiOEh2xRmRgNRgthl1LZrbIuFt/1yCSiVwQnFbkNl3ZG6S4+VSxpyeRK35awlRG9aeW4dUf/nC1mwdgZJvqES1RqeUodTRcaP21ziK+dl1Y3JIm+e5cM1lJf5L53ZZsjxKNkbHy4JSjmZ+/QJ8drtdK2RB3dQ2nIizDVQDIJLL+IJ/Q4mKZGi9FfYhkZQtda/fFIN3VPLzEmxv5qN1xWLIHR0fEY5wS20kXLEYLTon8vmSchBJ2SYYvCTWFHtJSBr2KzUHupLbbqidx4TApaZBuI4rCDGu0Rac4NZDRyScsdqKwkpNNeL6N3Q1CIfhlHH++gPlSf8IErN6E6Rqvg4HWijJap48JGtfmBtX5yVfSF1X4ybHMFoOXvR8yeyFo9SmTy39qBEJAaqHTc=
   skip_cleanup: true

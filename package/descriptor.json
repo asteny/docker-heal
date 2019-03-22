@@ -15,15 +15,15 @@
     },
 
     "version": {
-        "name": "0.0.1.0",
-        "desc": "",
+        "name": "0.0.1",
+        "desc": "Tool for restart docker container if health check failed",
         "released": "2019-03-07",
         "vcs_tag": "0.0.1",
         "gpgSign": true
     },
 
     "files":
-    [{"includePattern": "build/packages/(.*\.deb)", "uploadPattern": "pool/main/d/docker-heal/$1",
+    [{"includePattern": "package/(.*\.deb)", "uploadPattern": "pool/main/d/docker-heal/$1",
     "matrixParams": {
         "deb_distribution": "xenial",
         "deb_component": "main",

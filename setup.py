@@ -12,7 +12,7 @@ setup(
     author=__author__,
     author_email='pavel@sofrony.ru',
     license="MIT",
-    description="Restarting docker container if docker health check failed",
+    description="Tool for restart docker container if health check failed",
     platforms="all",
     packages=find_packages(),
     install_requires=(
@@ -33,10 +33,10 @@ setup(
     ),
     entry_points={
         'console_scripts': [
-            'docker-heal = docker-heal.docker-heal:main',
+            'docker_heal = docker_heal.docker_heal:main',
         ],
     },
     extras_require={
-        ':python_version <= "3.7.3"': 'typing >= 3.6.5',
+        ':python_version <= "3.7.3"': 'typing >= 3.5.2',
     },
 )

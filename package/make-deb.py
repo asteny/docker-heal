@@ -7,26 +7,25 @@ import logging
 log = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
-pkg_name = 'ssl-exporter'
+pkg_name = 'docker-heal'
 
 ENV_PATH = os.getenv("ENV_PATH", "/usr/share/python3/%s" % pkg_name)
 
 pip = plumbum.local[os.path.join(ENV_PATH, 'bin', 'pip3')]
 
 log.info("Creating virtualenv %r", ENV_PATH)
-virtualenv['-p', 'python3.6', ENV_PATH] & plumbum.FG
+virtualenv['-p', 'python3.5', ENV_PATH] & plumbum.FG
 
 log.info("Installing package %r", pkg_name)
 pip['install', '--progress-bar=off', '--no-binary=:all:', '-U', "git+https://github.com/asteny/docker-heal"] & plumbum.FG
 
-ln['-snf', os.path.join(ENV_PATH, "bin", "ssl_exporter"), "/usr/bin/%s" % pkg_name] & plumbum.BG
+ln['-snf', os.path.join(ENV_PATH, "bin", "docker_heal"), "/usr/bin/%s" % pkg_name] & plumbum.BG
 
 version = (pip['show', pkg_name] | grep['^Version']) & plumbum.BG
 version.wait()
 
 version = version.stdout.strip().replace("Version:", '').strip()
 
-os.makedirs('build/packages', exist_ok=True)
 os.makedirs('libdir', exist_ok=True)
 
 args = (
@@ -36,9 +35,9 @@ args = (
     '-n', pkg_name,
     '--deb-systemd', 'contrib/{}.service'.format(pkg_name),
     '-v', version,
-    '-p', "build/packages",
-    '-d', 'python3.6',
-    '-d', 'python3.6-gdbm',
+    '-p', "package",
+    '-d', 'python3.5',
+    '-d', 'python3.5-gdbm',
     '-d', 'libcap-ng0',
     '--config-files', '/etc/default/{}'.format(pkg_name),
     '--config-files', '/etc/{}.conf'.format(pkg_name),
@@ -71,8 +70,8 @@ deb_files = list(
     filter(
         lambda x: os.path.isfile(x) and x.endswith('.deb'),
         map(
-            lambda x: os.path.join('build/packages/', x),
-            os.listdir('build/packages/')
+            lambda x: os.path.join('package/', x),
+            os.listdir('package/')
         )
     )
 )
