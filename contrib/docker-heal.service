@@ -1,0 +1,23 @@
+[Unit]
+Description=Tool for restart docker container if health check failed.
+Documentation=https://github.com/asteny/docker-heal
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+
+Restart=always
+RestartSec=5
+
+TimeoutStartSec=5
+TimeoutStopSec=10
+
+EnvironmentFile=-/etc/default/docker-heal
+
+PIDFile=/var/run/docker-heal.pid
+ExecStart=/usr/bin/docker-heal $CMD_OPTS
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
