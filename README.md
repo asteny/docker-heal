@@ -8,7 +8,7 @@ Tool for restart docker container if [health check failed](https://docs.docker.c
 
 To use docker-heal you need:
 - build container or up [docker-compose with health check](https://docs.docker.com/compose/compose-file/#healthcheck)
-- build container with label (default is 'autoheal') or use flag ```-l all``` for healing all containers (but they all should have health check)
+- build container with label (default is 'autoheal', but you could write you own) or use flag ```-l all``` for healing all containers (but they all should have health check)
  
 Code of this repo is a python version of [willfarrell/docker-autoheal](https://github.com/willfarrell/docker-autoheal) 
 
@@ -33,8 +33,6 @@ apt-get update
 apt-get install docker-heal -y
 
 ```
-
-Default config in /etc/docker-heal.conf
 
 Docker
 ------
