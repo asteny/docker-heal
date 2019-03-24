@@ -46,6 +46,8 @@ arguments = parser.parse_args()
 
 log = logging.getLogger()
 
+CLIENT = docker.APIClient(base_url='unix://var/run/docker.sock')
+
 
 def label_filter():
     if arguments.label == 'all':
@@ -91,26 +93,25 @@ def container_need_heal(container_inspect, container_name):
 
 def container_restart(container):
     try:
-        client.restart(container)
+        CLIENT.restart(container)
     except Exception:
         log.exception("Can't restart docker")
 
 
-def main(client):
-    for container in client.containers(filters=label_filter()):
-        container_inspect_info = client.inspect_container(container['Id'])
-        if container_need_heal(container_inspect_info, container['Names']):
-            log.warning('{} {}'.format('Healing', container['Names']))
-            container_restart(container)
-
-
-if __name__ == "__main__":
-    client = docker.APIClient(base_url='unix://var/run/docker.sock')
+def main():
     basic_config(
         level=arguments.log_level.upper(),
         buffered=False,
         log_format=arguments.log_format
     )
     while True:
-        main(client)
+        for container in CLIENT.containers(filters=label_filter()):
+            container_inspect_info = CLIENT.inspect_container(container['Id'])
+            if container_need_heal(container_inspect_info, container['Names']):
+                log.warning('{} {}'.format('Healing', container['Names']))
+                container_restart(container)
         time.sleep(arguments.check_interval)
+
+
+if __name__ == "__main__":
+    main()
