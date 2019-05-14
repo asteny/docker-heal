@@ -16,11 +16,11 @@ setup(
     platforms="all",
     packages=find_packages(),
     install_requires=(
-        'certifi==2018.11.29',
+        'certifi==2019.3.9',
         'chardet==3.0.4',
         'colorlog==4.0.2',
         'ConfigArgParse==0.14.0',
-        'docker==3.7.0',
+        'docker==3.7.2',
         'docker-pycreds==0.4.0',
         'fast-json==0.3.2',
         'idna==2.8',
@@ -28,8 +28,8 @@ setup(
         'requests==2.21.0',
         'six==1.12.0',
         'ujson==1.35',
-        'urllib3==1.24.1',
-        'websocket-client==0.55.0',
+        'urllib3==1.24.3',
+        'websocket-client==0.56.0',
     ),
     entry_points={
         'console_scripts': [
