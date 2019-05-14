@@ -46,8 +46,6 @@ arguments = parser.parse_args()
 
 log = logging.getLogger()
 
-CLIENT = docker.APIClient(base_url='unix://var/run/docker.sock')
-
 
 def label_filter():
     if arguments.label == 'all':
@@ -114,4 +112,5 @@ def main():
 
 
 if __name__ == "__main__":
+    CLIENT = docker.APIClient(base_url='unix://var/run/docker.sock')
     main()
