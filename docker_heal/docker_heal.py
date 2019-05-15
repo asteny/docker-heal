@@ -89,28 +89,28 @@ def container_need_heal(container_inspect, container_name):
         )
 
 
-def container_restart(container):
+def container_restart(client, container):
     try:
-        CLIENT.restart(container)
+        client.restart(container)
     except Exception:
         log.exception("Can't restart docker")
 
 
 def main():
+    client = docker.APIClient(base_url='unix://var/run/docker.sock')
     basic_config(
         level=arguments.log_level.upper(),
         buffered=False,
         log_format=arguments.log_format
     )
     while True:
-        for container in CLIENT.containers(filters=label_filter()):
-            container_inspect_info = CLIENT.inspect_container(container['Id'])
+        for container in client.containers(filters=label_filter()):
+            container_inspect_info = client.inspect_container(container['Id'])
             if container_need_heal(container_inspect_info, container['Names']):
                 log.warning('{} {}'.format('Healing', container['Names']))
-                container_restart(container)
+                container_restart(client, container)
         time.sleep(arguments.check_interval)
 
 
 if __name__ == "__main__":
-    CLIENT = docker.APIClient(base_url='unix://var/run/docker.sock')
     main()
