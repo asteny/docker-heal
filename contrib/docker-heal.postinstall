@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+DESC="Tool for restart docker container if health check failed"
+
+/bin/systemctl daemon-reload
+/bin/chmod +x /usr/bin/docker-heal
+
+exit 0
+

@@ -1,7 +1,7 @@
 import os
 from subprocess import check_output
 import plumbum
-from plumbum.cmd import grep, fpm, ln, sort, find, virtualenv, chown
+from plumbum.cmd import grep, fpm, ln, sort, find, chown
 import logging
 
 log = logging.getLogger()
@@ -13,8 +13,10 @@ ENV_PATH = os.getenv("ENV_PATH", "/usr/share/python3/%s" % pkg_name)
 
 pip = plumbum.local[os.path.join(ENV_PATH, 'bin', 'pip3')]
 
+python37 = plumbum.local['python3.7']
+
 log.info("Creating virtualenv %r", ENV_PATH)
-virtualenv['-p', 'python3.5', ENV_PATH] & plumbum.FG
+python37['-m', 'venv', ENV_PATH] & plumbum.FG
 
 log.info("Installing package %r", pkg_name)
 pip['install', '--progress-bar=off', '--no-binary=:all:', '-U', "git+https://github.com/asteny/docker-heal"] & plumbum.FG
@@ -36,11 +38,15 @@ args = (
     '--deb-systemd', 'contrib/{}.service'.format(pkg_name),
     '-v', version,
     '-p', "package",
-    '-d', 'python3.5',
-    '-d', 'python3.5-gdbm',
+    '-d', 'python3.7-minimal',
+    '-d', 'python3.7-venv',
+    '-d', 'python3.7-dev',
+    '-d', 'python3-gdbm',
     '-d', 'libcap-ng0',
     '--config-files', '/etc/default/{}'.format(pkg_name),
     '--config-files', '/etc/{}.conf'.format(pkg_name),
+    '--after-install', 'contrib/{}.postinstall'.format(pkg_name),
+    '--after-remove', 'contrib/{}.postrm'.format(pkg_name),
 )
 
 depends = check_output((

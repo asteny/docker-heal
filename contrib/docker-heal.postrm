@@ -1,0 +1,31 @@
+#!/bin/bash
+
+
+DESC="Tool for restart docker container if health check failed"
+
+case "$1" in
+  remove)
+    /bin/systemctl stop docker-heal
+  ;;
+
+  upgrade)
+    /bin/systemctl restart docker-heal
+  ;;
+
+  purge)
+    /bin/rm -fr /etc/docker-heal.conf
+  ;;
+
+  remove|failed-upgrade|abort-install|abort-upgrade|disappear)
+    /bin/systemctl restart docker-heal
+    exit 0
+  ;;
+
+  *)
+    echo "postrm called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+
+esac
+
+exit 0

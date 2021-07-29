@@ -1,7 +1,8 @@
 import logging
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
+from dateutil import parser as time_parser
 
 import docker
 from configargparse import ArgumentParser
@@ -55,8 +56,8 @@ def label_filter():
 
 
 def validate_check_after_start_time(start_time_seconds, start_at):
-    start_at_time = datetime.strptime(start_at[0:-2], '%Y-%m-%dT%H:%M:%S.%f')
-    delta = datetime.utcnow() - start_at_time
+    start_at_time = time_parser.isoparse(start_at)
+    delta = datetime.now(tz=timezone.utc) - start_at_time
     return delta.seconds > start_time_seconds
 
 

@@ -1,0 +1,53 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Build deb package
+
+env:
+    ITERATION: 0
+    GPGKEY: ${{ secrets.GPGKEY }}
+    GPGPASS: ${{ secrets.GPGPASS }}
+    PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+
+
+jobs:
+  build:
+    strategy:
+        matrix:
+          ubuntu: ["focal", "xenial", "bionic"]
+
+    runs-on: ubuntu-latest
+    container: asteny/fpm-python-docker:${{ matrix.ubuntu }}-3.7
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          apt-get update && apt-get install gnupg dpkg-sig -y
+          gem install rake package_cloud --no-document
+
+      - name: Prepare gpg
+        run: |
+          echo "$GPGKEY" | base64 --decode > /tmp/private.key
+          gpg --import /tmp/private.key
+          gpg --list-keys
+
+      - name: Get version
+        run: |
+          echo "VERSION=`/home/env/bin/python3 setup.py --version | tr '+' '-'`" >> $GITHUB_ENV
+          echo ${{ env.VERSION }}
+
+      - name: Build deb package
+        run: |
+          /home/env/bin/python3 package/make-deb.py
+
+      - name: Sign deb package
+        run: |
+          md5sum package/docker-heal_${{ env.VERSION }}-${ITERATION}_amd64.deb
+          GPG_TTY=$(tty) dpkg-sig -k EA8AECDE414187DB --sign builder package/docker-heal_${{ env.VERSION }}-${ITERATION}_amd64.deb
+          md5sum package/docker-heal_${{ env.VERSION }}-${ITERATION}_amd64.deb
+
+      - name: Upload package
+        run: |
+          package_cloud push the_asten/docker-heal/ubuntu/${{ matrix.ubuntu }} package/docker-heal_${{ env.VERSION }}-${ITERATION}_amd64.deb --skip-errors

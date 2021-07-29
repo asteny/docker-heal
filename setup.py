@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function
 
 from setuptools import setup, find_packages
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __author__ = 'Pavel Sofrony <pavel@sofrony.ru>'
 
 setup(
@@ -16,20 +16,11 @@ setup(
     platforms="all",
     packages=find_packages(),
     install_requires=(
-        'certifi==2019.3.9',
-        'chardet==3.0.4',
-        'colorlog==4.0.2',
-        'ConfigArgParse==0.14.0',
-        'docker==3.7.2',
-        'docker-pycreds==0.4.0',
-        'fast-json==0.3.2',
-        'idna==2.8',
-        'prettylog==0.2.0',
-        'requests==2.21.0',
-        'six==1.12.0',
-        'ujson==1.35',
-        'urllib3==1.24.3',
-        'websocket-client==0.56.0',
+        'ConfigArgParse==1.5.1',
+        'docker==5.0.0',
+        'prettylog==0.3.0',
+        'python-dateutil==2.8.2',
+        'six==1.16.0',
     ),
     entry_points={
         'console_scripts': [

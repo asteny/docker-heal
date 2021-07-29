@@ -1,13 +1,16 @@
-FROM ubuntu:xenial
+FROM snakepacker/python:all as builder
 
-RUN apt-get update && \
-    apt-get install gnupg2 apt-transport-https ca-certificates -y && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-    echo "deb https://dl.bintray.com/asten/heal-docker xenial main" | tee -a /etc/apt/sources.list.d/heal-docker.list && \
-    apt-get update && \
-    apt-get install docker-heal -y && \
-    apt-get purge -y gnupg2 && \
-    apt-get autoremove -y && \
-    rm -fr /var/lib/apt/lists/*
+RUN python3.7 -m venv /usr/share/python3/app
 
-CMD ["/usr/bin/docker-heal"]
+RUN /usr/share/python3/app/bin/pip install -U git+https://github.com/asteny/docker-heal
+
+RUN find-libdeps /usr/share/python3/app > /usr/share/python3/app/pkgdeps.txt
+
+#################################################################
+FROM snakepacker/python:3.7
+
+COPY --from=builder /usr/share/python3/app /usr/share/python3/app
+
+RUN ln -snf /usr/share/python3/app/bin/docker_heal /usr/bin/docker_heal
+
+CMD ["/usr/bin/docker_heal"]

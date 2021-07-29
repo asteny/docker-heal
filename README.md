@@ -1,5 +1,4 @@
-[![Deb build Status](https://travis-ci.org/asteny/docker-heal.svg?branch=master)](https://travis-ci.org/asteny/docker-heal)[![Download](https://api.bintray.com/packages/asten/heal-docker/docker-heal/images/download.svg)](https://bintray.com/asten/heal-docker/docker-heal/_latestVersion)
-
+![build](https://github.com/asteny/docker-heal/actions/workflows/build.yml/badge.svg)
 
 Docker heal
 ===========
@@ -18,17 +17,19 @@ INSTALLATION
 pip
 ---
 ```bash
-pip install git+https://github.com/asteny/docker-heal
+pip install -U git+https://github.com/asteny/docker-heal
 ```
 
-Deb package for Ubuntu (16.04 - 18.04)
+Deb package for Ubuntu
 --------------------------------------
 
 ```bash
 apt-get update
 apt-get install gnupg2 apt-transport-https ca-certificates -y
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
-echo "deb https://dl.bintray.com/asten/heal-docker xenial main" | tee -a /etc/apt/sources.list.d/heal-docker.list
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys DA05A43C4C8E9F8B
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys A57ED69D49D1012A
+printf "deb https://packagecloud.io/the_asten/docker-heal/ubuntu/ focal main \ndeb-src https://packagecloud.io/the_asten/docker-heal
+/ubuntu/ focal main" | tee -a /etc/apt/sources.list.d/docker-heal.list 
 apt-get update
 apt-get install docker-heal -y
 
